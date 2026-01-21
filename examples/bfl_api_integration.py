@@ -67,7 +67,7 @@ def generate_with_bfl(
 
     # BFL API request (uncomment for real usage)
     # headers = {
-    #     "Authorization": f"Bearer {api_key}",
+    #     "x-key": api_key,  # BFL uses x-key header for auth
     #     "Content-Type": "application/json",
     # }
     #
