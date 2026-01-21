@@ -120,7 +120,8 @@ grid_img = gallium.grid(
     padding=10,
     background="#000000",
     labels=[f"seed={e.seed}" for e in experiments],
-    label_font_size=14
+    label_font_size=14,
+    label_color="#ffffff"
 )
 
 # Prevent OOM with large images
@@ -283,8 +284,8 @@ See the `examples/` directory for complete integration examples:
 
 | Function | Description |
 |----------|-------------|
-| `grid(images, cols, *, padding, background, max_size, labels, label_font_size)` | Create image grid |
-| `matrix_grid(experiments, rows, cols, *, max_size, show_labels)` | Create matrix comparison grid |
+| `grid(images, cols, *, padding, background, max_size, labels, label_font_size, label_color)` | Create image grid |
+| `matrix_grid(experiments, rows, cols, *, max_size, show_labels, label_font_size, label_color, max_label_length)` | Create matrix comparison grid |
 | `compare(image_a, image_b, *, labels)` | Compare two images |
 
 ### FLUX.2 Module (`gallium.flux`)
