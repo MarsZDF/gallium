@@ -610,7 +610,7 @@ class Tracker:
             >>> df = tracker.to_dataframe(model="flux.2-pro")
         """
         try:
-            import pandas as pd
+            import pandas as pd  # type: ignore[import-untyped]
         except ImportError as e:
             from .exceptions import MissingDependencyError
             raise MissingDependencyError(
