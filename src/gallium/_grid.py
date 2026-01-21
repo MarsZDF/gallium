@@ -4,7 +4,7 @@ import contextlib
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, Optional
 
-from ._imaging import _check_pillow, create_grid_streaming, _get_font
+from ._imaging import _check_pillow, _get_font, create_grid_streaming
 
 if TYPE_CHECKING:
     from PIL import Image
