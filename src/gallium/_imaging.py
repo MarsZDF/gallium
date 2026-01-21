@@ -180,6 +180,30 @@ def thumbnail(image: "Image.Image", max_size: int) -> "Image.Image":
     return img
 
 
+def _get_font(size: int) -> Any:
+    """Get a font of the specified size.
+
+    Attempts to load a scalable font, falling back to default if necessary.
+    """
+    from PIL import ImageFont
+
+    # Try to use load_default with size (Pillow 10+)
+    try:
+        return ImageFont.load_default(size=size)
+    except TypeError:
+        pass
+
+    # Fallback for older Pillow: try standard fonts
+    for font_name in ["arial.ttf", "DejaVuSans.ttf", "LiberationSans-Regular.ttf", "FreeSans.ttf"]:
+        try:
+            return ImageFont.truetype(font_name, size)
+        except OSError:
+            continue
+
+    # Final fallback
+    return ImageFont.load_default()
+
+
 def create_grid(
     images: list["Image.Image"],
     cols: int,
@@ -208,6 +232,9 @@ def create_grid(
 
     if not images:
         raise ValueError("Cannot create grid from empty image list")
+
+    # Get font
+    font = _get_font(label_font_size)
 
     # Calculate grid dimensions
     rows = (len(images) + cols - 1) // cols
@@ -252,6 +279,7 @@ def create_grid(
                 label,
                 fill=label_color,
                 anchor="mt",  # middle-top anchor
+                font=font,
             )
 
     return canvas
@@ -315,6 +343,9 @@ def create_grid_streaming(
     canvas = Image.new("RGB", (canvas_width, canvas_height), background)
     draw = ImageDraw.Draw(canvas)
 
+    # Get font
+    font = _get_font(label_font_size)
+
     # Stream images one at a time
     for idx, source in enumerate(sources):
         # Track if we loaded from file (so we know to close it)
@@ -356,6 +387,7 @@ def create_grid_streaming(
                 label,
                 fill=label_color,
                 anchor="mt",
+                font=font,
             )
 
     return canvas
