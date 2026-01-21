@@ -313,6 +313,7 @@ def row_to_experiment(row: sqlite3.Row) -> Experiment:
 
 # Supported filter operations
 SUPPORTED_FILTERS = {
+    "id",
     "prompt__contains",
     "prompt__startswith",
     "prompt__exact",
@@ -364,7 +365,10 @@ def build_query(filters: dict[str, Any]) -> tuple[str, list[Any]]:
                 f"Supported filters: {', '.join(sorted(SUPPORTED_FILTERS))}"
             )
 
-        if key == "prompt__contains":
+        if key == "id":
+            conditions.append("id = ?")
+            params.append(value)
+        elif key == "prompt__contains":
             conditions.append("prompt LIKE ? ESCAPE '\\'")
             params.append(f"%{_escape_like(value)}%")
         elif key == "prompt__startswith":

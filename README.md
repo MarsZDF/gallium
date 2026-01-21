@@ -306,6 +306,7 @@ See the `examples/` directory for complete integration examples:
 
 | Filter | Example |
 |--------|---------|
+| `id` | `find(id=1)` |
 | `prompt__contains` | `find(prompt__contains="cat")` |
 | `prompt__startswith` | `find(prompt__startswith="a photo")` |
 | `prompt` or `prompt__exact` | `find(prompt="exact match")` |
@@ -313,6 +314,7 @@ See the `examples/` directory for complete integration examples:
 | `model` | `find(model="flux.2-pro")` |
 | `width`, `height` | `find(width=1024)` |
 | `starred` | `find(starred=True)` |
+| `notes__contains` | `find(notes__contains="best")` |
 | `created_after`, `created_before` | `find(created_after=datetime(...))` |
 
 ---
@@ -450,10 +452,10 @@ grid_img.save("cyberpunk_comparison.png")
 
 Gallium is part of a collection of lightweight, zero-dependency Python libraries:
 
-- **[elemental-xenon](https://github.com/MarsZDF/xenon)** - Reactive state management
-- **[elemental-indium](https://github.com/MarsZDF/indium)** - Text inspection and Unicode security
-- **[elemental-rhodium](https://github.com/MarsZDF/rhodium)** - Safe numerical operations
-- **[elemental-neon](https://github.com/MarsZDF/neon)** - Color manipulation
+- **[elemental-neon](https://github.com/MarsZDF/neon)** - Near-equality and tolerance arithmetic for floating-point numbers
+- **[elemental-rhodium](https://github.com/MarsZDF/rhodium)** - Circular arithmetic for geographic coordinates
+- **[elemental-indium](https://github.com/MarsZDF/indium)** - Text inspection and invisible character detection
+- **[elemental-xenon](https://github.com/MarsZDF/xenon)** - LLM XML repair and sanitization
 
 ---
 

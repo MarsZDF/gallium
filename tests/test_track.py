@@ -760,6 +760,23 @@ class TestDateFilters:
 class TestFilterEdgeCases:
     """Tests for filter edge cases."""
 
+    def test_find_by_id(self, tmp_path):
+        """Test filtering by experiment ID."""
+        tracker = Tracker(tmp_path / "test.db")
+        _id1 = tracker.log(prompt="first")  # noqa: F841
+        id2 = tracker.log(prompt="second")
+        _id3 = tracker.log(prompt="third")  # noqa: F841
+
+        # Find specific experiment by ID
+        experiments = tracker.find(id=id2)
+        assert len(experiments) == 1
+        assert experiments[0].id == id2
+        assert experiments[0].prompt == "second"
+
+        # Non-existent ID returns empty list
+        experiments = tracker.find(id=9999)
+        assert len(experiments) == 0
+
     def test_find_by_dimensions(self, tmp_path):
         """Test filtering by width and height."""
         tracker = Tracker(tmp_path / "test.db")

@@ -14,7 +14,6 @@ BFL API Documentation:
     https://docs.bfl.ml/
 """
 
-import base64
 import os
 import time
 from pathlib import Path
@@ -140,7 +139,10 @@ def hackathon_workflow():
     print("\n[1/4] Seed Exploration")
     print("-" * 40)
 
-    prompt = "A futuristic Tokyo street at night, neon lights reflecting on wet pavement, cyberpunk aesthetic, highly detailed"
+    prompt = (
+        "A futuristic Tokyo street at night, neon lights reflecting "
+        "on wet pavement, cyberpunk aesthetic, highly detailed"
+    )
 
     # Generate 4 seed variations
     seed_params = gf.seed_sweep(prompt, seeds=[42, 123, 456, 789])
@@ -233,7 +235,7 @@ def hackathon_workflow():
     starred = len(gallium.find(starred=True))
     print(f"Total experiments: {total}")
     print(f"Starred (best): {starred}")
-    print(f"\nAll outputs saved to: outputs/")
+    print("\nAll outputs saved to: outputs/")
 
 
 def quick_compare(prompt: str, num_seeds: int = 4) -> None:
