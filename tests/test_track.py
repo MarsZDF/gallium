@@ -214,10 +214,10 @@ class TestTracker:
 
         with Tracker(db_path) as tracker:
             tracker.log(prompt="test")
-            assert tracker._conn is not None
+            assert tracker._local.conn is not None
 
         # Connection should be closed after context
-        assert tracker._conn is None
+        assert not hasattr(tracker._local, "conn") or tracker._local.conn is None
 
     def test_context_manager_on_exception(self, tmp_path):
         """Test context manager closes connection on exception."""
@@ -231,7 +231,7 @@ class TestTracker:
             pass
 
         # Connection should be closed even after exception
-        assert tracker._conn is None
+        assert not hasattr(tracker._local, "conn") or tracker._local.conn is None
 
 
 class TestGlobalAPI:
