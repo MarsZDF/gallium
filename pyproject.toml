@@ -1,0 +1,75 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "elemental-gallium"
+version = "0.9.0"
+description = "Zero-dependency Python library for image gallery grids, experiment tracking, and A/B comparison for image generation workflows"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+dependencies = []
+authors = [
+    { name = "Marco Zaccaria Di Fraia", email = "marco.z.difraia@gmail.com" }
+]
+keywords = [
+    "image",
+    "gallery",
+    "grid",
+    "experiment",
+    "tracking",
+    "comparison",
+    "a-b-testing",
+    "flux",
+    "image-generation",
+    "diffusion",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+grid = ["pillow>=9.0"]
+test = ["pytest>=7.0", "pytest-cov>=4.0", "pillow>=9.0"]
+dev = ["pytest>=7.0", "pytest-cov>=4.0", "pillow>=9.0", "ruff>=0.1.0", "mypy>=1.0"]
+
+[project.urls]
+Homepage = "https://github.com/MarsZDF/gallium"
+Repository = "https://github.com/MarsZDF/gallium"
+"Bug Tracker" = "https://github.com/MarsZDF/gallium/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gallium"]
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+testpaths = ["tests"]
+addopts = [
+    "--cov=gallium",
+    "--cov-report=term-missing",
+    "--cov-fail-under=90"
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
