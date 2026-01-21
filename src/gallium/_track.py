@@ -5,7 +5,7 @@ import json
 import sqlite3
 import threading
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 from ._db import (
     delete_experiment,
@@ -47,21 +47,36 @@ class Tracker:
             db_path: Path to the SQLite database file.
         """
         self.db_path = Path(db_path)
-        self._conn: Optional[sqlite3.Connection] = None
+        # Thread-local storage for connections
+        self._local = threading.local()
+        # Lock for one-time global schema initialization
+        self._global_init_lock = threading.Lock()
         self._initialized = False
 
-    def _ensure_initialized(self) -> None:
-        """Ensure database is initialized (lazy initialization)."""
-        if not self._initialized:
-            self._conn = get_connection(self.db_path)
-            init_db(self._conn)
+    def _ensure_schema(self) -> None:
+        """Ensure database schema is initialized (once, globally)."""
+        if self._initialized:
+            return
+
+        with self._global_init_lock:
+            if self._initialized:
+                return
+            # Create a temporary connection to init schema
+            conn = get_connection(self.db_path)
+            try:
+                init_db(conn)
+            finally:
+                conn.close()
             self._initialized = True
 
     def _get_conn(self) -> sqlite3.Connection:
-        """Get database connection, initializing if needed."""
-        self._ensure_initialized()
-        assert self._conn is not None  # Ensured by _ensure_initialized
-        return self._conn
+        """Get thread-local database connection."""
+        self._ensure_schema()
+
+        if not hasattr(self._local, "conn") or self._local.conn is None:
+            self._local.conn = get_connection(self.db_path)
+
+        return cast(sqlite3.Connection, self._local.conn)
 
     def log(
         self,
@@ -647,11 +662,10 @@ class Tracker:
         return pd.DataFrame(data)
 
     def close(self) -> None:
-        """Close the database connection."""
-        if self._conn is not None:
-            self._conn.close()
-            self._conn = None
-            self._initialized = False
+        """Close the database connection for the current thread."""
+        if hasattr(self._local, "conn") and self._local.conn is not None:
+            self._local.conn.close()
+            self._local.conn = None
 
     def __enter__(self) -> "Tracker":
         """Enter context manager."""

@@ -4,7 +4,7 @@ import contextlib
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, Optional
 
-from ._imaging import _check_pillow, create_grid_streaming
+from ._imaging import _check_pillow, _get_font, create_grid_streaming
 
 if TYPE_CHECKING:
     from PIL import Image
@@ -217,6 +217,9 @@ def matrix_grid(
     canvas = Image.new("RGB", (canvas_width, canvas_height), background)
     draw = ImageDraw.Draw(canvas)
 
+    # Get font
+    font = _get_font(label_font_size)
+
     def truncate_label(val: Any) -> str:
         """Truncate label to max_label_length."""
         text = str(val)
@@ -229,7 +232,7 @@ def matrix_grid(
         for col_idx, col_val in enumerate(col_values):
             x = row_header_width + padding + col_idx * (cell_size + padding) + cell_size // 2
             y = header_height // 2
-            draw.text((x, y), truncate_label(col_val), fill=label_color, anchor="mm")
+            draw.text((x, y), truncate_label(col_val), fill=label_color, anchor="mm", font=font)
 
     # Draw rows
     for row_idx, row_val in enumerate(row_values):
@@ -242,6 +245,7 @@ def matrix_grid(
                 truncate_label(row_val),
                 fill=label_color,
                 anchor="mm",
+                font=font,
             )
 
         # Draw cells
@@ -262,6 +266,19 @@ def matrix_grid(
 
                     canvas.paste(img, (x_base + x_offset, y_base + y_offset))
                     img.close()
+
+                    # Draw star indicator (Gold circle) if starred
+                    if getattr(exp, "starred", False):
+                        # Top-right corner of the image
+                        cx = x_base + x_offset + img.width - 15
+                        cy = y_base + y_offset + 15
+                        r = 6  # radius
+                        draw.ellipse(
+                            (cx - r, cy - r, cx + r, cy + r),
+                            fill="#FFD700",
+                            outline="#000000",
+                            width=1,
+                        )
                 except (FileNotFoundError, ValueError):
                     # Draw placeholder for missing image
                     draw.rectangle(
@@ -273,6 +290,7 @@ def matrix_grid(
                         "?",
                         fill="#cccccc",
                         anchor="mm",
+                        font=font,
                     )
             else:
                 # Draw empty cell placeholder
