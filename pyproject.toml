@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "elemental-gallium"
-version = "0.9.1"
+version = "0.9.3"
 description = "Zero-dependency Python library for image gallery grids, experiment tracking, and A/B comparison for image generation workflows"
 readme = "README.md"
 license = "MIT"

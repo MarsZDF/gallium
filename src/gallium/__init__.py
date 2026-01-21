@@ -22,7 +22,7 @@ Example:
     >>> grid_img.save("comparison_grid.png")
 """
 
-__version__ = "0.9.1"
+__version__ = "0.9.3"
 
 # Public API - Tracking
 # Public API - Comparison
