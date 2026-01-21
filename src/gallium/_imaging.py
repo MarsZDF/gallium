@@ -187,6 +187,7 @@ def create_grid(
     background: str = "#ffffff",
     labels: Optional[list[str]] = None,
     label_font_size: int = 14,
+    label_color: str = "#000000",
 ) -> "Image.Image":
     """Create a grid of images.
 
@@ -197,6 +198,7 @@ def create_grid(
         background: Background color (hex or name).
         labels: Optional labels for each image.
         label_font_size: Font size for labels.
+        label_color: Color for label text (hex or name).
 
     Returns:
         PIL.Image.Image: The combined grid image.
@@ -248,7 +250,7 @@ def create_grid(
             draw.text(
                 (label_x, label_y),
                 label,
-                fill="#000000",
+                fill=label_color,
                 anchor="mt",  # middle-top anchor
             )
 
@@ -262,6 +264,7 @@ def create_grid_streaming(
     background: str = "#ffffff",
     labels: Optional[list[str]] = None,
     label_font_size: int = 14,
+    label_color: str = "#000000",
     max_size: Optional[int] = None,
     cell_width: Optional[int] = None,
     cell_height: Optional[int] = None,
@@ -278,6 +281,7 @@ def create_grid_streaming(
         background: Background color (hex or name).
         labels: Optional labels for each image.
         label_font_size: Font size for labels.
+        label_color: Color for label text (hex or name).
         max_size: If set, thumbnail each image to this max dimension.
         cell_width: Fixed cell width. If None, uses max_size or 256.
         cell_height: Fixed cell height. If None, uses max_size or 256.
@@ -350,7 +354,7 @@ def create_grid_streaming(
             draw.text(
                 (label_x, label_y),
                 label,
-                fill="#000000",
+                fill=label_color,
                 anchor="mt",
             )
 

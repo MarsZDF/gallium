@@ -24,6 +24,7 @@ def grid(
     max_images: Optional[int] = DEFAULT_MAX_IMAGES,
     labels: Optional[Sequence[str]] = None,
     label_font_size: int = 14,
+    label_color: str = "#000000",
     cell_size: Optional[int] = None,
 ) -> "Image.Image":
     """Combine images into a grid layout.
@@ -46,6 +47,7 @@ def grid(
                    Set to None to disable the limit (use with caution).
         labels: Optional labels to display below each image.
         label_font_size: Font size for labels in pixels.
+        label_color: Color for label text (hex or name). Use light colors for dark backgrounds.
         cell_size: Fixed cell size for uniform grid. If None, uses max_size or 256.
 
     Returns:
@@ -105,6 +107,7 @@ def grid(
         background=background,
         labels=labels_list,
         label_font_size=label_font_size,
+        label_color=label_color,
         max_size=max_size,
         cell_width=cell_dim,
         cell_height=cell_dim,
@@ -121,6 +124,8 @@ def matrix_grid(
     max_size: int = 256,
     show_labels: bool = True,
     label_font_size: int = 12,
+    label_color: str = "#000000",
+    max_label_length: int = 15,
 ) -> "Image.Image":
     """Create a matrix grid organized by two experiment attributes.
 
@@ -135,6 +140,8 @@ def matrix_grid(
         max_size: Maximum dimension for each thumbnail.
         show_labels: Whether to show row/column headers.
         label_font_size: Font size for headers.
+        label_color: Color for label text (hex or name).
+        max_label_length: Maximum length for labels before truncation.
 
     Returns:
         PIL.Image.Image: The matrix grid image.
@@ -210,12 +217,19 @@ def matrix_grid(
     canvas = Image.new("RGB", (canvas_width, canvas_height), background)
     draw = ImageDraw.Draw(canvas)
 
+    def truncate_label(val: Any) -> str:
+        """Truncate label to max_label_length."""
+        text = str(val)
+        if len(text) > max_label_length:
+            return text[:max_label_length - 2] + ".."
+        return text
+
     # Draw column headers
     if show_labels:
         for col_idx, col_val in enumerate(col_values):
             x = row_header_width + padding + col_idx * (cell_size + padding) + cell_size // 2
             y = header_height // 2
-            draw.text((x, y), str(col_val), fill="#000000", anchor="mm")
+            draw.text((x, y), truncate_label(col_val), fill=label_color, anchor="mm")
 
     # Draw rows
     for row_idx, row_val in enumerate(row_values):
@@ -225,8 +239,8 @@ def matrix_grid(
         if show_labels:
             draw.text(
                 (row_header_width // 2, y_base + cell_size // 2),
-                str(row_val),
-                fill="#000000",
+                truncate_label(row_val),
+                fill=label_color,
                 anchor="mm",
             )
 
@@ -251,7 +265,7 @@ def matrix_grid(
                 except (FileNotFoundError, ValueError):
                     # Draw placeholder for missing image
                     draw.rectangle(
-                        [x_base, y_base, x_base + cell_size, y_base + cell_size],
+                        (x_base, y_base, x_base + cell_size, y_base + cell_size),
                         outline="#cccccc",
                     )
                     draw.text(
@@ -263,7 +277,7 @@ def matrix_grid(
             else:
                 # Draw empty cell placeholder
                 draw.rectangle(
-                    [x_base, y_base, x_base + cell_size, y_base + cell_size],
+                    (x_base, y_base, x_base + cell_size, y_base + cell_size),
                     outline="#eeeeee",
                 )
 
